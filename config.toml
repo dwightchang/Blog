@@ -1,4 +1,4 @@
-baseURL = "https://dwightchang.github.io/blog/"
+baseURL = "http://localhost:1313/"
 languageCode = "en"
 defaultContentLanguage = "en"                             # en / zh-cn / ... (This field determines which i18n file to use)
 title = "Even - A super concise theme for Hugo"
@@ -21,7 +21,7 @@ googleAnalytics = ""      # UA-XXXXXXXX-X
 copyright = ""            # default: author.name ↓        # 默认为下面配置的author.name ↓
 
 [author]                  # essential                     # 必需
-  name = "olOwOlo"
+  name = "Dwight Chang"
 
 [sitemap]                 # essential                     # 必需
   changefreq = "weekly"
@@ -53,7 +53,7 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
   version = "4.x"           # Used to give a friendly message when you have an incompatible update
   debug = false             # If true, load `eruda.min.js`. See https://github.com/liriliri/eruda
 
-  since = "2017"            # Site creation time          # 站点建立时间
+  since = "2022"            # Site creation time          # 站点建立时间
   # use public git repo url to link lastmod git commit, enableGitInfo should be true.
   # 指定 git 仓库地址，可以生成指向最近更新的 git commit 的链接，需要将 enableGitInfo 设置成 true.
   gitRepo = ""
@@ -80,7 +80,7 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
 
   # 一些全局开关，你也可以在每一篇内容的 front matter 中针对单篇内容关闭或开启某些功能，在 archetypes/default.md 查看更多信息。
   # Some global options, you can also close or open something in front matter for a single post, see more information from `archetypes/default.md`.
-  toc = true                                                                            # 是否开启目录
+  toc = false                                                                            # 是否开启目录
   autoCollapseToc = false   # Auto expand and collapse toc                              # 目录自动展开/折叠
   fancybox = true           # see https://github.com/fancyapps/fancybox                 # 是否启用fancybox（图片可点击）
 
@@ -172,31 +172,31 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
 
   [params.busuanzi]         # count web traffic by busuanzi                             # 是否使用不蒜子统计站点访问量
     enable = false
-    siteUV = true
-    sitePV = true
-    pagePV = true
+    siteUV = false
+    sitePV = false
+    pagePV = false
 
-  [params.reward]                                         # 文章打赏
-    enable = false
-    wechat = "/path/to/your/wechat-qr-code.png"           # 微信二维码
-    alipay = "/path/to/your/alipay-qr-code.png"           # 支付宝二维码
+  # [params.reward]                                         # 文章打赏
+  #   enable = false
+  #   wechat = "/path/to/your/wechat-qr-code.png"           # 微信二维码
+  #   alipay = "/path/to/your/alipay-qr-code.png"           # 支付宝二维码
 
-  [params.social]                                         # 社交链接
-    a-email = "mailto:your@email.com"
-    b-stack-overflow = "http://localhost:1313"
-    c-twitter = "http://localhost:1313"
-    d-facebook = "http://localhost:1313"
-    e-linkedin = "http://localhost:1313"
-    f-google = "http://localhost:1313"
-    g-github = "http://localhost:1313"
-    h-weibo = "http://localhost:1313"
-    i-zhihu = "http://localhost:1313"
-    j-douban = "http://localhost:1313"
-    k-pocket = "http://localhost:1313"
-    l-tumblr = "http://localhost:1313"
-    m-instagram = "http://localhost:1313"
-    n-gitlab = "http://localhost:1313"
-    o-bilibili = "http://localhost:1313"
+  # [params.social]                                         # 社交链接
+  #   a-email = "mailto:your@email.com"
+  #   b-stack-overflow = "http://localhost:1313"
+  #   c-twitter = "http://localhost:1313"
+  #   d-facebook = "http://localhost:1313"
+  #   e-linkedin = "http://localhost:1313"
+  #   f-google = "http://localhost:1313"
+  #   g-github = "http://localhost:1313"
+  #   h-weibo = "http://localhost:1313"
+  #   i-zhihu = "http://localhost:1313"
+  #   j-douban = "http://localhost:1313"
+  #   k-pocket = "http://localhost:1313"
+  #   l-tumblr = "http://localhost:1313"
+  #   m-instagram = "http://localhost:1313"
+  #   n-gitlab = "http://localhost:1313"
+  #   o-bilibili = "http://localhost:1313"
 
 # See https://gohugo.io/about/hugo-and-gdpr/
 [privacy]
