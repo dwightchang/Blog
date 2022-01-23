@@ -1,0 +1,3 @@
+[submodule "theme/hugo-theme-even"]
+	path = theme/hugo-theme-even
+	url = https://github.com/olOwOlo/hugo-theme-even
