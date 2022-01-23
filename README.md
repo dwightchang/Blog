@@ -1,1 +1,1 @@
-hugotest
+blog
