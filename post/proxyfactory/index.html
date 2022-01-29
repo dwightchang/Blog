@@ -1,0 +1,429 @@
+<!doctype html><html lang=en>
+<head>
+<meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge,chrome=1">
+<title>ProxyFactory - </title>
+<meta name=renderer content="webkit">
+<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta http-equiv=cache-control content="no-transform">
+<meta http-equiv=cache-control content="no-siteapp">
+<meta name=theme-color content="#f8f5ec">
+<meta name=msapplication-navbutton-color content="#f8f5ec">
+<meta name=apple-mobile-web-app-capable content="yes">
+<meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec">
+<meta name=author content="Dwight Chang"><meta name=description content="我們經常需要在系統中，呼叫別人的服務，在撰寫程式碼時，要先理解該API服務介面的規格，例如傳送的Json參數內容，參數的型態、預設值、必填參"><meta name=keywords content="Hugo,theme,even">
+<meta name=generator content="Hugo 0.92.1 with theme even">
+<link rel=canonical href=https://dwightchang.github.io/Blog/post/proxyfactory/>
+<link rel=apple-touch-icon sizes=180x180 href=/Blog/apple-touch-icon.png>
+<link rel=icon type=image/png sizes=32x32 href=/Blog/favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=/Blog/favicon-16x16.png>
+<link rel=manifest href=/Blog/manifest.json>
+<link rel=mask-icon href=/Blog/safari-pinned-tab.svg color=#5bbad5>
+<link href=/Blog/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css rel=stylesheet>
+<link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin=anonymous>
+<meta property="og:title" content="ProxyFactory">
+<meta property="og:description" content="我們經常需要在系統中，呼叫別人的服務，在撰寫程式碼時，要先理解該API服務介面的規格，例如傳送的Json參數內容，參數的型態、預設值、必填參">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://dwightchang.github.io/Blog/post/proxyfactory/"><meta property="article:section" content="post">
+<meta property="article:published_time" content="2022-01-22T22:46:03+08:00">
+<meta property="article:modified_time" content="2022-01-22T22:46:03+08:00">
+<meta itemprop=name content="ProxyFactory">
+<meta itemprop=description content="我們經常需要在系統中，呼叫別人的服務，在撰寫程式碼時，要先理解該API服務介面的規格，例如傳送的Json參數內容，參數的型態、預設值、必填參"><meta itemprop=datePublished content="2022-01-22T22:46:03+08:00">
+<meta itemprop=dateModified content="2022-01-22T22:46:03+08:00">
+<meta itemprop=wordCount content="1308">
+<meta itemprop=keywords content><meta name=twitter:card content="summary">
+<meta name=twitter:title content="ProxyFactory">
+<meta name=twitter:description content="我們經常需要在系統中，呼叫別人的服務，在撰寫程式碼時，要先理解該API服務介面的規格，例如傳送的Json參數內容，參數的型態、預設值、必填參"><!--[if lte IE 9]><script src=https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js></script><![endif]--><!--[if lt IE 9]><script src=https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js></script>
+<script src=https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js></script><![endif]-->
+</head>
+<body>
+<div id=mobile-navbar class=mobile-navbar>
+<div class=mobile-header-logo>
+<a href=/Blog/ class=logo> </a>
+</div>
+<div class=mobile-navbar-icon>
+<span></span>
+<span></span>
+<span></span>
+</div>
+</div>
+<nav id=mobile-menu class="mobile-menu slideout-menu">
+<ul class=mobile-menu-list>
+<a href=/Blog/>
+<li class=mobile-menu-item>Home</li>
+</a><a href=/Blog/post/>
+<li class=mobile-menu-item>Archives</li>
+</a>
+</ul>
+</nav>
+<div class=container id=mobile-panel>
+<header id=header class=header>
+<div class=logo-wrapper>
+<a href=/Blog/ class=logo> </a>
+</div>
+<nav class=site-navbar>
+<ul id=menu class=menu>
+<li class=menu-item>
+<a class=menu-item-link href=/Blog/>Home</a>
+</li><li class=menu-item>
+<a class=menu-item-link href=/Blog/post/>Archives</a>
+</li>
+</ul>
+</nav>
+</header>
+<main id=main class=main>
+<div class=content-wrapper>
+<div id=content class=content>
+<article class=post>
+<header class=post-header>
+<h1 class=post-title>ProxyFactory</h1>
+<div class=post-meta>
+<span class=post-time> 2022-01-22 </span>
+</div>
+</header>
+<div class=post-content>
+<p>我們經常需要在系統中，呼叫別人的服務，在撰寫程式碼時，要先理解該API服務介面的規格，例如傳送的Json參數內容，參數的型態、預設值、必填參數等等。呼叫完成後，同樣要解讀收到的Json內容，檢查呼叫的結果是否成功。而這個服務可能在另一個系統上也會使用，這時，又要再一次地重覆這個工作。</p>
+<p>如果將呼叫 API 服務的程式，包裝成模組，甚至讓 API 呼叫，就像呼叫某個物件的方法，那將會變得很方便。</p>
+<p>首先從以下的 API 服務 <code>/Order/FindOrder</code> 呼叫開始</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-r data-lang=r><span class=n>curl</span> <span class=o>--</span><span class=n>location</span> <span class=o>--</span><span class=n>request</span> <span class=n>POST</span> <span class=s>&#39;http://localhost:63392/Order/FindOrder&#39;</span> <span class=n>\</span>
+<span class=o>--</span><span class=n>header</span> <span class=s>&#39;Token: x12345678&#39;</span> <span class=n>\</span>
+<span class=o>--</span><span class=n>data</span><span class=o>-</span><span class=n>raw</span> <span class=s>&#39;{
+</span><span class=s>    &#34;OrderSn&#34;: 1
+</span><span class=s>}&#39;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>發送內容包含一個訂單編號(OrderSn)，以及授權呼叫的 token，用物件包裝如下</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-c# data-lang=c#><span class=k>public</span> <span class=k>class</span> <span class=nc>FindOrderReq</span>
+<span class=p>{</span>
+    <span class=k>public</span> <span class=kt>int</span> <span class=n>OrderSn</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>        
+<span class=p>}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>API回覆的Json內容如下</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=p>{</span>
+    <span class=nt>&#34;success&#34;</span><span class=p>:</span> <span class=kc>true</span><span class=p>,</span>
+    <span class=nt>&#34;message&#34;</span><span class=p>:</span> <span class=kc>null</span><span class=p>,</span>
+    <span class=nt>&#34;result&#34;</span><span class=p>:</span> <span class=p>{</span>
+        <span class=nt>&#34;sn&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+        <span class=nt>&#34;customerNo&#34;</span><span class=p>:</span> <span class=mi>133</span><span class=p>,</span>
+        <span class=nt>&#34;productNo&#34;</span><span class=p>:</span> <span class=mi>15</span><span class=p>,</span>
+        <span class=nt>&#34;quantity&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+        <span class=nt>&#34;createdTime&#34;</span><span class=p>:</span> <span class=s2>&#34;2020-04-04T15:30:31&#34;</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>將此Json格式用物件包裝起來</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-c# data-lang=c#><span class=k>public</span> <span class=k>class</span> <span class=nc>FindOrderResp</span>
+<span class=p>{</span>
+    <span class=k>public</span> <span class=kt>bool</span> <span class=n>Success</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+    <span class=k>public</span> <span class=kt>string</span> <span class=n>Message</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+    <span class=k>public</span> <span class=n>FindOrderResult</span> <span class=n>Result</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+<span class=p>}</span>
+
+<span class=k>public</span> <span class=k>class</span> <span class=nc>FindOrderResult</span>
+<span class=p>{</span>
+    <span class=k>public</span> <span class=kt>int</span> <span class=n>Sn</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+    <span class=k>public</span> <span class=kt>int</span> <span class=n>CustomerNo</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+    <span class=k>public</span> <span class=kt>int</span> <span class=n>ProductNo</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+    <span class=k>public</span> <span class=kt>int</span> <span class=n>Quantity</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+    <span class=k>public</span> <span class=n>DateTime</span> <span class=n>CreatedTime</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+<span class=p>}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>還需要一個物件來執行呼叫動作</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-c# data-lang=c#><span class=k>public</span> <span class=k>class</span> <span class=nc>OrderProxy</span> <span class=p>:</span> <span class=n>ProxyBase</span>
+<span class=p>{</span>
+    <span class=k>public</span> <span class=n>OrderProxy</span><span class=p>(</span><span class=kt>string</span> <span class=n>ApiRootUrl</span><span class=p>,</span> <span class=kt>string</span> <span class=n>ApiToken</span><span class=p>):</span> <span class=k>base</span><span class=p>(</span><span class=n>ApiRootUrl</span><span class=p>,</span> <span class=n>ApiToken</span><span class=p>)</span>
+    <span class=p>{</span>
+        
+    <span class=p>}</span>
+
+    <span class=k>public</span> <span class=n>FindOrderResult</span> <span class=n>FindOrder</span><span class=p>(</span><span class=n>FindOrderReq</span> <span class=n>req</span><span class=p>)</span>
+    <span class=p>{</span>
+        <span class=kt>var</span> <span class=n>data</span> <span class=p>=</span> <span class=k>new</span> <span class=n>ApiRequestData</span><span class=p>()</span>
+        <span class=p>{</span>
+            <span class=n>apiPath</span> <span class=p>=</span> <span class=s>&#34;Order/FindOrder&#34;</span><span class=p>,</span>
+            <span class=n>contentType</span> <span class=p>=</span> <span class=n>ApiRequestData</span><span class=p>.</span><span class=n>ContentType</span><span class=p>.</span><span class=n>application_json</span><span class=p>,</span>
+            <span class=n>method</span> <span class=p>=</span> <span class=n>ApiRequestData</span><span class=p>.</span><span class=n>Method</span><span class=p>.</span><span class=n>POST</span><span class=p>,</span>
+            <span class=n>postData</span> <span class=p>=</span> <span class=n>JsonConvert</span><span class=p>.</span><span class=n>SerializeObject</span><span class=p>(</span><span class=n>req</span><span class=p>)</span>
+        <span class=p>};</span>
+
+        <span class=kt>var</span> <span class=n>resp</span> <span class=p>=</span> <span class=n>InvokeApi</span><span class=p>&lt;</span><span class=n>FindOrderResp</span><span class=p>&gt;(</span><span class=n>data</span><span class=p>);</span>
+
+        <span class=k>if</span> <span class=p>(!</span><span class=n>resp</span><span class=p>.</span><span class=n>Success</span><span class=p>)</span>
+        <span class=p>{</span>
+            <span class=k>throw</span> <span class=k>new</span> <span class=n>Exception</span><span class=p>(</span><span class=n>JsonConvert</span><span class=p>.</span><span class=n>SerializeObject</span><span class=p>(</span><span class=n>resp</span><span class=p>));</span>
+        <span class=p>}</span>
+
+        <span class=k>return</span> <span class=n>resp</span><span class=p>.</span><span class=n>Result</span><span class=p>;</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>在第3行建構式中，傳入該服務的 url 位置，以及授權呼叫該服務的 token。</p>
+<p>第8行<code>FindOrder()</code>是提供給呼叫端呼叫<code>/Order/FindOrder</code> 服務的方法，輸入參數為<code>FindOrderReq</code>物件。
+<code>ApiRequestData</code>物件的內容，則是依該服務介面規格來撰寫，例如呼叫的方法是GET、POST或是PUT等等。</p>
+<p>接下來第18行執行呼叫，並將結果反序列化為<code>FindOrderResp</code>物件，程式碼如下</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-c# data-lang=c#><span class=k>using</span> <span class=p>(</span><span class=kt>var</span> <span class=n>response</span> <span class=p>=</span> <span class=p>(</span><span class=n>HttpWebResponse</span><span class=p>)</span><span class=n>request</span><span class=p>.</span><span class=n>GetResponse</span><span class=p>())</span>
+<span class=p>{</span>
+    <span class=c1>//HttpStatusCode=200才算呼叫成功
+</span><span class=c1></span>    <span class=k>if</span> <span class=p>(</span><span class=n>response</span><span class=p>.</span><span class=n>StatusCode</span> <span class=p>==</span> <span class=n>HttpStatusCode</span><span class=p>.</span><span class=n>OK</span><span class=p>)</span>
+    <span class=p>{</span>
+        <span class=k>using</span> <span class=p>(</span><span class=kt>var</span> <span class=n>sr</span> <span class=p>=</span> <span class=k>new</span> <span class=n>StreamReader</span><span class=p>(</span><span class=n>response</span><span class=p>.</span><span class=n>GetResponseStream</span><span class=p>()))</span>
+        <span class=p>{</span>
+            <span class=k>value</span> <span class=p>=</span> <span class=n>sr</span><span class=p>.</span><span class=n>ReadToEnd</span><span class=p>();</span>
+        <span class=p>}</span>
+    <span class=p>}</span>
+    <span class=k>else</span>
+    <span class=p>{</span>
+        <span class=k>throw</span> <span class=k>new</span> <span class=n>Exception</span><span class=p>(((</span><span class=kt>int</span><span class=p>)</span><span class=n>response</span><span class=p>.</span><span class=n>StatusCode</span><span class=p>).</span><span class=n>ToString</span><span class=p>()</span> <span class=p>+</span> <span class=s>&#34;:&#34;</span> <span class=p>+</span> <span class=n>response</span><span class=p>.</span><span class=n>StatusDescription</span><span class=p>);</span>
+    <span class=p>}</span>
+
+    <span class=k>return</span> <span class=n>JsonConvert</span><span class=p>.</span><span class=n>DeserializeObject</span><span class=p>&lt;</span><span class=n>T</span><span class=p>&gt;(</span><span class=k>value</span><span class=p>);</span>
+<span class=p>}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>檢查呼叫的結果是不是HTTP狀態碼200，如果不是成功的狀態，則抛出 Exception，同樣的，在剛才<code>FindOrder()</code>程式碼收到反序列化的物件後，依該服務的規格定義，當 success=true 時才表示成功，因此再進一步檢查此屬性，若不為 true 則一樣拋出 Exception，如下</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-c# data-lang=c#>    <span class=kt>var</span> <span class=n>resp</span> <span class=p>=</span> <span class=n>InvokeApi</span><span class=p>&lt;</span><span class=n>FindOrderResp</span><span class=p>&gt;(</span><span class=n>data</span><span class=p>);</span>
+
+    <span class=k>if</span> <span class=p>(!</span><span class=n>resp</span><span class=p>.</span><span class=n>Success</span><span class=p>)</span>
+    <span class=p>{</span>
+        <span class=k>throw</span> <span class=k>new</span> <span class=n>Exception</span><span class=p>(</span><span class=n>JsonConvert</span><span class=p>.</span><span class=n>SerializeObject</span><span class=p>(</span><span class=n>resp</span><span class=p>));</span>
+    <span class=p>}</span>
+
+    <span class=k>return</span> <span class=n>resp</span><span class=p>.</span><span class=n>Result</span><span class=p>;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>請注意最後回傳的物件是<code>resp.Result</code>而不是<code>resp</code>，我們再看一次回覆的Json內容，其中 success、message 等屬性，是該 API 服務用來告訴我們呼叫的結果是否成功，對於呼叫端的系統來說，呼叫失敗會收到 Exception 錯誤，成功的話只需要收到訂單查詢的結果即可，也就是<code>result</code>的內容。</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-json data-lang=json><span class=p>{</span>
+    <span class=nt>&#34;success&#34;</span><span class=p>:</span> <span class=kc>true</span><span class=p>,</span>
+    <span class=nt>&#34;message&#34;</span><span class=p>:</span> <span class=kc>null</span><span class=p>,</span>
+    <span class=nt>&#34;result&#34;</span><span class=p>:</span> <span class=p>{</span>
+        <span class=nt>&#34;sn&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+        <span class=nt>&#34;customerNo&#34;</span><span class=p>:</span> <span class=mi>133</span><span class=p>,</span>
+        <span class=nt>&#34;productNo&#34;</span><span class=p>:</span> <span class=mi>15</span><span class=p>,</span>
+        <span class=nt>&#34;quantity&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+        <span class=nt>&#34;createdTime&#34;</span><span class=p>:</span> <span class=s2>&#34;2020-04-04T15:30:31&#34;</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>我們再將建構<code>OrderProxy</code>物件時所需的 API Url 以及 token 包裝起來</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-c# data-lang=c#><span class=k>public</span> <span class=k>class</span> <span class=nc>ProxyFactory</span>
+<span class=p>{</span>
+    <span class=k>public</span> <span class=k>static</span> <span class=n>OrderProxy</span> <span class=n>OrderProxy</span><span class=p>()</span>
+    <span class=p>{</span>
+        <span class=k>return</span> <span class=k>new</span> <span class=n>OrderProxy</span><span class=p>(</span><span class=s>&#34;http://localhost:63392&#34;</span><span class=p>,</span> <span class=s>&#34;f496896f-446f-4a5b-97c4-b6d12f66a22c&#34;</span><span class=p>);</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>最後，當呼叫端使用這個<code>OrderProxy</code>呼叫服務時，就會像這樣</p>
+<div class=highlight><div class=chroma>
+<table class=lntable><tr><td class=lntd>
+<pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td>
+<td class=lntd>
+<pre tabindex=0 class=chroma><code class=language-c# data-lang=c#><span class=kt>var</span> <span class=n>orderData</span> <span class=p>=</span> <span class=n>ProxyFactory</span><span class=p>.</span><span class=n>OrderProxy</span><span class=p>().</span><span class=n>FindOrder</span><span class=p>(</span><span class=k>new</span> <span class=n>ApiProxy</span><span class=p>.</span><span class=n>Models</span><span class=p>.</span><span class=n>Order</span><span class=p>.</span><span class=n>FindOrderReq</span><span class=p>()</span>
+<span class=p>{</span>
+    <span class=n>OrderSn</span> <span class=p>=</span> <span class=m>1</span>
+<span class=p>});</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>如此一來，呼叫端在呼叫此 API 服務時，就像呼叫物件的方法一樣，不用處理 HTTP 以及 API 呼叫相關的細節。
+當我們在另一個系統也要呼叫 <code>/Order/FindOrder</code> 服務時，只需要將<code>OrderProxy</code>這個套件拿到另一個系統上使用即可。</p>
+</div>
+<div class=post-copyright>
+<p class=copyright-item>
+<span class=item-title>Author</span>
+<span class=item-content>Dwight Chang</span>
+</p>
+<p class=copyright-item>
+<span class=item-title>LastMod</span>
+<span class=item-content>
+2022-01-22
+</span>
+</p>
+</div>
+<footer class=post-footer>
+<nav class=post-nav>
+</nav>
+</footer>
+</article>
+</div>
+</div>
+</main>
+<footer id=footer class=footer>
+<div class=social-links>
+<a href=https://dwightchang.github.io/Blog/index.xml type=application/rss+xml class="iconfont icon-rss" title=rss></a>
+</div>
+<div class=copyright>
+<span class=power-by>
+Powered by <a class=hexo-link href=https://gohugo.io>Hugo</a>
+</span>
+<span class=division>|</span>
+<span class=theme-info>
+Theme -
+<a class=theme-link href=https://github.com/olOwOlo/hugo-theme-even>Even</a>
+</span>
+<span class=copyright-year>
+&copy;
+2022<span class=heart><i class="iconfont icon-heart"></i></span><span>Dwight Chang</span>
+</span>
+</div>
+</footer>
+<div class=back-to-top id=back-to-top>
+<i class="iconfont icon-up"></i>
+</div>
+</div>
+<script src=https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin=anonymous></script>
+<script type=text/javascript src=/Blog/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js></script>
+</body>
+</html>
