@@ -153,4 +153,4 @@ var orderData = ProxyFactory.OrderProxy().FindOrder(new ApiProxy.Models.Order.Fi
 });
 ```            
 如此一來，呼叫端在呼叫此 API 服務時，就像呼叫物件的方法一樣，不用處理 HTTP 以及 API 呼叫相關的細節。
-當我們在另一個系統也要呼叫 `/Order/FindOrder` 服務時，只需要將`ProxyFactory`這個套件拿到另一個系統上使用即可。
+當我們在另一個系統也要呼叫 `/Order/FindOrder` 服務時，只需要將`OrderProxy`這個套件拿到另一個系統上使用即可。
